@@ -1,9 +1,8 @@
-const express = require('express');
+const KoaRouter = require('koa-router');
+const { loginController } = require('../controller/auth/login.controller');
 
-const { authLogin } = require('../controller/auth.controller');
+const router = new KoaRouter();
 
-const router = express.Router();
+router.post('/api/signin', loginController);
 
-router.post('/api/signin', authLogin);
-
-module.exports = router;
+module.exports = router.routes();

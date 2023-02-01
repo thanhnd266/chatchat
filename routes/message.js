@@ -1,6 +1,7 @@
-const express = require('express');
+const KoaRouter = require('koa-router');
 const { getMessage, addMessage } = require('../controller/message.controller');
-const router = express.Router();
+
+const router = new KoaRouter();
 
 //Get message
 router.get('/get/:conversationId', getMessage);
@@ -8,4 +9,4 @@ router.get('/get/:conversationId', getMessage);
 //Add message
 router.post('/add', addMessage);
 
-module.exports = router;
+module.exports = router.routes();

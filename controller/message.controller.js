@@ -2,30 +2,32 @@ const Message = require('../models/Message');
 const mongoose = require('mongoose');
 
 //Get message from conversation
-const getMessage = async (req, res) => {
+const getMessage = async (ctx) => {
 
     try {
         const messages = await Message.find({
-            conversationId: req.params.conversationId,
+            conversationId: ctx.request.params.conversationId,
         });
-
-        res.status(200).json(messages);
-
+        ctx.response.status = 200;
+        ctx.response.body = messages;
     } catch(err) {
-        res.status(500).json(err);
+        ctx.response.status = 500;
+        ctx.response.body = err;
     }
 }
 
 // Add message
-const addMessage = async (req, res) => {
-    const newMessage = new Message(req.body);
+const addMessage = async (ctx) => {
+    const newMessage = new Message(ctx.request.body);
     
     try {
         const savedMessage = await newMessage.save();
-        res.status(200).json(savedMessage);
-
+        ctx.response.status = 200;
+        ctx.response.body = savedMessage;
+        // res.status(200).json(savedMessage);
     } catch(err) {
-        res.status(500).json(err);
+        ctx.response.status = 500;
+        ctx.response.body = err;
     }
 };
 

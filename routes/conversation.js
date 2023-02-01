@@ -1,6 +1,6 @@
-const express = require('express');
+const KoaRouter = require('koa-router');
 
-const router = express.Router();
+const router = new KoaRouter();
 
 const { 
     getListConversation,
@@ -13,4 +13,4 @@ router.get('/get-list/:userId', getListConversation);
 router.get('/get-one/:userId/:receiverId', getOneConversation);
 router.post('/create', createConversation);
 
-module.exports = router;
+module.exports = router.routes();

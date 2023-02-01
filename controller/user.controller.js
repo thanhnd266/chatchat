@@ -3,19 +3,28 @@ const mongoose = require('mongoose');
 const { hashPassword } = require('../helpers/hashPassword');
 
 // Get all users
-const getListUser = async (req, res) => {
+const getListUser = async (ctx) => {
     try {
         const users = await User.find({}).sort({ createdAt: -1 });
-        res.status(200).json(users);
+
+        ctx.response.status = 200;
+        ctx.response.body = {
+            status_code: 200,
+            data: users,
+        };
     } catch(err) {
-        res.status(400).send(err)
+        ctx.response.status = 400;
+        ctx.response.body = {
+            status_code: 400,
+            err
+        };
     }
 };
 
 // Get a user
-const getOneUser = async (req, res) => {
-    const userId = req.params.id;
-    const username = req.query.username;
+const getOneUser = async (ctx) => {
+    const userId = ctx.request.params.id;
+    const username = ctx.request.query.username;
 
     try {
         const user = userId
@@ -23,15 +32,17 @@ const getOneUser = async (req, res) => {
             : await User.findOne({ username });
 
         const { password, updatedAt, ...other } = user._doc;
-        res.status(200).json(other);
+        ctx.response.status = 200;
+        ctx.response.body = other;
     } catch(err) {
-        res.status(500).json(err);
+        ctx.response.status = 500;
+        ctx.response.body = err;
     }
 };
 
 //Create a new user
-const createUser = async(req, res, next) => {
-    const { username, email, password } = req.body;
+const createUser = async(ctx, next) => {
+    const { username, email, password } = ctx.request.body;
 
     //Add to the db
     try {
@@ -44,50 +55,57 @@ const createUser = async(req, res, next) => {
                 email,
                 password: hashPassword(password),
             });
-
-            res.status(200).json(user);
+            ctx.response.status = 200;
+            ctx.response.body = user;
         } else if ((isExistUser && !isExistEmail) || (isExistUser && isExistEmail)) {
-            res.status(404).json({
+            ctx.response.status = 404;
+            ctx.response.body = {
                 status_code: 404,
                 message: 'User already exists',
-            })
+            }
         } else {
-            res.status(404).json({
+            ctx.response.status = 404;
+            ctx.response.body = {
                 status_code: 404,
                 message: 'Email already exists',
-            })
+            }
         }
         
     } catch(err) {
-        res.status(400).json({ err: err.message });
+        ctx.response.status = 400;
+        ctx.response.body = { err: err.message };
     }
 }
 
 //Update user
-const updateUser = async (req, res) => {
+const updateUser = async (ctx) => {
 
-    const { id } = req.params;
+    const { id } = ctx.request.params;
 
     try {
         if(!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).json({ err: 'No suck user' });
+            ctx.response.status = 404;
+            ctx.response.body = { err: 'No suck user' }
+            return;
         };
     
         const user = await User.findOneAndUpdate(
             { _id: id },
             {
-                ...req.body
+                ...ctx.request.body
             }
         );
     
         if(!user) {
-            return res.status(400).json({ error: 'No suck user' });
+            ctx.response.status = 400;
+            ctx.response.body = { error: 'No suck user' };
+            return
         }
-
-        res.status(200).json(user);
-        
+        ctx.response.status = 200;
+        ctx.response.body = user;
     } catch(err) {
-        res.status(400).json({ err: err.message });
+        ctx.response.status = 400;
+        ctx.response.body = { err: err.message };
     }
 }
 

@@ -2,42 +2,47 @@ const Conversation = require('../models/Conversation');
 const mongoose = require('mongoose');
 
 //Get conversations of a user
-const getListConversation = async (req, res) => {
+const getListConversation = async (ctx) => {
     try {
         const conversation = await Conversation.find({
-            members: { $in: [req.params.userId] },
+            members: { $in: [ctx.request.params.userId] },
         });
-        res.status(200).json(conversation);
+        ctx.response.status = 200;
+        ctx.response.body = conversation;
     } catch(err) {
-        res.status(500).json(err);
+        ctx.response.status = 500;
+        ctx.response.body = err;
     }
 };
 
 //Get one conversation of user
-const getOneConversation = async (req, res) => {
+const getOneConversation = async (ctx) => {
     try {
         const conversation = await Conversation.findOne({
-            members: { $all: [req.params.userId, req.params.receiverId] },
+            members: { $all: [ctx.request.params.userId, ctx.request.params.receiverId] },
         })
-
-        res.status(200).json(conversation);
+        ctx.response.status = 200;
+        ctx.response.body = conversation;
 
     } catch(err) {
-        res.status(500).json(err);
+        ctx.response.status = 500;
+        ctx.response.body = err;
     }
 };
 
 //Create new conversation
-const createConversation = async (req, res) => {
+const createConversation = async (ctx) => {
     const newConversation = new Conversation({
-        members: [req.body.senderId, req.body.receiverId],
+        members: [ctx.request.body.senderId, ctx.request.body.receiverId],
     })
 
     try {
         const savedConversation = await newConversation.save();
-        res.status(200).json(savedConversation);
+        ctx.response.status = 200;
+        ctx.response.body = savedConversation;
     } catch(err) {
-        res.status(500).json(err);
+        ctx.response.status = 500;
+        ctx.response.body = err;
     }
 }
 
