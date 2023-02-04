@@ -6,12 +6,12 @@ const {
     createUser, 
     updateUser 
 } = require('../controller/user.controller');
-const { requireLogin } = require('../middleware/auth/authenticate');
+const { authenticate } = require('../middleware/auth/authenticate');
 
 const router = new KoaRouter();
 
 //Get all users
-router.get('/get-list', requireLogin, getListUser);
+router.get('/get-list', authenticate, getListUser);
 
 //Create a new user
 router.post('/create', createUser);

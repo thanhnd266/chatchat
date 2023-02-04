@@ -11,6 +11,7 @@ const reloginController = async (ctx) => {
             status_code: 401,
             message: 'Invalid Parameter',
         }
+        return;
     };
 
     //Create new JWT Token
@@ -29,12 +30,16 @@ const reloginController = async (ctx) => {
     //Create new redis
     redisHelper.generateRedis(dataToken);
 
+    console.log(dataToken)
+
     ctx.response.status = 200;
     ctx.response.body = {
         status_code: 200,
         message: 'Relogin successfully',
         data: dataToken,
     }
+
+    return;
 
 }
 

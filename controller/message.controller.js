@@ -1,5 +1,4 @@
 const Message = require('../models/Message');
-const mongoose = require('mongoose');
 
 //Get message from conversation
 const getMessage = async (ctx) => {
@@ -18,13 +17,29 @@ const getMessage = async (ctx) => {
 
 // Add message
 const addMessage = async (ctx) => {
-    const newMessage = new Message(ctx.request.body);
+    const newMessage = ctx.request.body;
     
+    if(!newMessage || !newMessage.text) {
+        ctx.response.status = 400;
+        return ctx.response.body = {
+            status_code: 400,
+            message: 'Invalid Parameters',
+            error_message: 'invalid_params',
+        }
+    }
+
     try {
-        const savedMessage = await newMessage.save();
+        const savedMessage = await Message.create(newMessage);
+        const conversationMessage = await Message.find({ 
+            conversationId: newMessage.conversationId,
+        });
+
         ctx.response.status = 200;
-        ctx.response.body = savedMessage;
-        // res.status(200).json(savedMessage);
+        return ctx.response.body = {
+            status_code: 200,
+            message: 'Added message successfully',
+            data: conversationMessage,
+        };
     } catch(err) {
         ctx.response.status = 500;
         ctx.response.body = err;

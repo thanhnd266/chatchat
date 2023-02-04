@@ -5,11 +5,23 @@ const { hashPassword } = require('../helpers/hashPassword');
 // Get all users
 const getListUser = async (ctx) => {
     try {
+
+        const userId = ctx.state.user.data;
+        
+        if(!userId) {
+            ctx.response.status = 403;
+            ctx.response.body = {
+                status_code: 403,
+                message: 'You need to login',
+            }
+        }
+
         const users = await User.find({}).sort({ createdAt: -1 });
 
         ctx.response.status = 200;
         ctx.response.body = {
             status_code: 200,
+            message: 'Get list users successfully',
             data: users,
         };
     } catch(err) {

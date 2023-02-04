@@ -14,6 +14,7 @@ const loginController = async (ctx) => {
                 status_code: 400,
                 message: 'Email is incorrect!'
             }
+            return;
         }
 
         if(!password) {
@@ -22,6 +23,7 @@ const loginController = async (ctx) => {
                 status_code: 400,
                 message: 'Password is incorrect!'
             }
+            return;
         }
 
         email = email.trim();
@@ -38,7 +40,7 @@ const loginController = async (ctx) => {
                 redisHelper.generateRedis(token);
 
                 ctx.response.status = 200;
-                ctx.response.body = {
+                return ctx.response.body = {
                     status_code: 200,
                     message: 'Login successfully',
                     data: {
@@ -52,6 +54,7 @@ const loginController = async (ctx) => {
                     status_code: 400,
                     message: 'Password is not correct',
                 }
+                return;
             }
         } else {
             ctx.response.status = 400;

@@ -1,7 +1,7 @@
 const { verifyToken } = require('../../helpers/token');
 const { verifyRedis } = require('../../helpers/redis');
 
-const requireLogin = async (ctx, next) => {
+const authenticate = async (ctx, next) => {
     
     const { authorization } = ctx.request.headers;
 
@@ -10,6 +10,7 @@ const requireLogin = async (ctx, next) => {
         ctx.response.body = {
             status_code: 401,
             message: 'Access Token expired',
+            error_message: 'access_token_expired'
         }
     };
 
@@ -24,7 +25,10 @@ const requireLogin = async (ctx, next) => {
             ctx.response.body = {
                 status_code: 401,
                 message: 'Access Token expired',
+                error_message: 'access_token_expired'
             }
+
+            return;
         };
 
         //Check verify with JWT
@@ -35,16 +39,13 @@ const requireLogin = async (ctx, next) => {
             access_token,
         }
 
-        console.log(ctx.state)
-
         return next();
     } catch(err) {
-        console.log('lot vo catch')
-
         ctx.response.status = 401;
         ctx.response.body = {
             status_code: 401,
             message: 'Access Token expired',
+            error_message: 'access_token_expired'
         }
     }
 };
@@ -58,6 +59,8 @@ const verifyRefreshToken = async (ctx, next) => {
             status_code: 403,
             message: 'Invalid Param',
         }
+
+        return;
     }
 
     try {
@@ -69,6 +72,8 @@ const verifyRefreshToken = async (ctx, next) => {
                 status_code: 401,
                 message: 'Refresh Token Expired',
             }
+
+            return;
         }
 
         //check with JWT
@@ -91,6 +96,6 @@ const verifyRefreshToken = async (ctx, next) => {
 }
 
 module.exports = {
-    requireLogin,
+    authenticate,
     verifyRefreshToken,
 }
