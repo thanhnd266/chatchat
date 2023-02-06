@@ -8,7 +8,10 @@ const getListConversation = async (ctx) => {
             members: { $in: [ctx.request.params.userId] },
         });
         ctx.response.status = 200;
-        ctx.response.body = conversation;
+        ctx.response.body = {
+            status_code: 200,
+            data: conversation,
+        };
     } catch(err) {
         ctx.response.status = 500;
         ctx.response.body = err;
@@ -22,7 +25,10 @@ const getOneConversation = async (ctx) => {
             members: { $all: [ctx.request.params.userId, ctx.request.params.receiverId] },
         })
         ctx.response.status = 200;
-        ctx.response.body = conversation;
+        ctx.response.body = {
+            status_code: 200,
+            data: conversation,
+        };
 
     } catch(err) {
         ctx.response.status = 500;
@@ -39,7 +45,10 @@ const createConversation = async (ctx) => {
     try {
         const savedConversation = await newConversation.save();
         ctx.response.status = 200;
-        ctx.response.body = savedConversation;
+        ctx.response.body = {
+            status_code: 200,
+            data: savedConversation,
+        };
     } catch(err) {
         ctx.response.status = 500;
         ctx.response.body = err;

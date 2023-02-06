@@ -5,7 +5,6 @@ const { hashPassword } = require('../helpers/hashPassword');
 // Get all users
 const getListUser = async (ctx) => {
     try {
-
         const userId = ctx.state.user.data;
         
         if(!userId) {
