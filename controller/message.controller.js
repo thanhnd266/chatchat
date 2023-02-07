@@ -8,7 +8,10 @@ const getMessage = async (ctx) => {
             conversationId: ctx.request.params.conversationId,
         });
         ctx.response.status = 200;
-        ctx.response.body = messages;
+        ctx.response.body = {
+            status_code: 200,
+            data: messages,
+        };
     } catch(err) {
         ctx.response.status = 500;
         ctx.response.body = err;

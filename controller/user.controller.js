@@ -44,7 +44,10 @@ const getOneUser = async (ctx) => {
 
         const { password, updatedAt, ...other } = user._doc;
         ctx.response.status = 200;
-        ctx.response.body = other;
+        ctx.response.body = {
+            status_code: 200,
+            data: other,
+        };
     } catch(err) {
         ctx.response.status = 500;
         ctx.response.body = err;
@@ -109,14 +112,23 @@ const updateUser = async (ctx) => {
     
         if(!user) {
             ctx.response.status = 400;
-            ctx.response.body = { error: 'No suck user' };
+            ctx.response.body = { 
+                status_code: 400,
+                error: 'No suck user'
+             };
             return
         }
         ctx.response.status = 200;
-        ctx.response.body = user;
+        ctx.response.body = {
+            status_code: 200,
+            data: user,
+        };
     } catch(err) {
         ctx.response.status = 400;
-        ctx.response.body = { err: err.message };
+        ctx.response.body = { 
+            status_code: 400,
+            err: err.message
+        };
     }
 }
 
