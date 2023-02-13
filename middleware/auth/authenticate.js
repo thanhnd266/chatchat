@@ -3,7 +3,8 @@ const { verifyRedis } = require('../../helpers/redis');
 
 const authenticate = async (ctx, next) => {
     
-    const { authorization } = ctx.request.headers;
+    const { authorization } = ctx.request.headers
+;
 
     if(!authorization || !authorization.startsWith("Bearer")) {
         ctx.response.status = 401;
@@ -12,8 +13,11 @@ const authenticate = async (ctx, next) => {
             message: 'Access Token expired',
             error_message: 'access_token_expired'
         }
+
+return;
     };
 
+console.log(authorization, "running")
     const access_token = authorization.split(' ')[1];
 
     try {
