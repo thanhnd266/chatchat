@@ -30,8 +30,6 @@ const reloginController = async (ctx) => {
     //Create new redis
     redisHelper.generateRedis(dataToken);
 
-    console.log(dataToken)
-
     ctx.response.status = 200;
     ctx.response.body = {
         status_code: 200,

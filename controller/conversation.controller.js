@@ -1,5 +1,4 @@
 const Conversation = require('../models/Conversation');
-const mongoose = require('mongoose');
 
 //Get conversations of a user
 const getListConversation = async (ctx) => {
@@ -7,6 +6,7 @@ const getListConversation = async (ctx) => {
         const conversation = await Conversation.find({
             members: { $in: [ctx.request.params.userId] },
         });
+
         ctx.response.status = 200;
         ctx.response.body = {
             status_code: 200,

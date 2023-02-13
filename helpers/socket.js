@@ -11,7 +11,6 @@ const removeUser = (socketId) => {
 
 const getSingleUser = (userId) => {
     receiverUser = users.find(user => user.userId === userId);
-    console.log(receiverUser);
     return receiverUser
 }
 
@@ -26,13 +25,9 @@ const socketActions = (socket, io) => {
     })
 
     //Send and get message
-    socket.on("sendMessage", ({ conversationId, senderId, receiverId, text }) => {
+    socket.on("sendMessage", ({ receiverId, ...data }) => {
         const user = getSingleUser(receiverId);
-        io.to(user.socketId).emit("getMessage", {
-            conversationId,
-            senderId,
-            text,
-        })
+        io.to(user.socketId).emit("getMessage", data)
     })
 
     //when disconnect
