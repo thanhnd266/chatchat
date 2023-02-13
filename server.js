@@ -32,7 +32,7 @@ const server = app.listen(port, () => {
 // socket
 let io = socketIO(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://thanhdev.me/",
         methods: ["GET", "POST"]
     }
 });
