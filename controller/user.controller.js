@@ -13,6 +13,8 @@ const getListUser = async (ctx) => {
                 status_code: 403,
                 message: 'You need to login',
             }
+
+            return;
         }
 
         const users = await User.find({}).sort({ createdAt: -1 });
@@ -23,6 +25,8 @@ const getListUser = async (ctx) => {
             message: 'Get list users successfully',
             data: users,
         };
+
+        return;
     } catch(err) {
         ctx.response.status = 400;
         ctx.response.body = {
@@ -55,7 +59,7 @@ const getOneUser = async (ctx) => {
 };
 
 //Create a new user
-const createUser = async(ctx, next) => {
+const createUser = async(ctx) => {
     const { username, email, password } = ctx.request.body;
 
     //Add to the db
@@ -70,19 +74,26 @@ const createUser = async(ctx, next) => {
                 password: hashPassword(password),
             });
             ctx.response.status = 200;
-            ctx.response.body = user;
+            ctx.response.body = {
+                status_code: 200,
+                data: user,
+            };
+            return;
+
         } else if ((isExistUser && !isExistEmail) || (isExistUser && isExistEmail)) {
             ctx.response.status = 404;
             ctx.response.body = {
                 status_code: 404,
                 message: 'User already exists',
             }
+            return;
         } else {
             ctx.response.status = 404;
             ctx.response.body = {
                 status_code: 404,
                 message: 'Email already exists',
             }
+            return;
         }
         
     } catch(err) {
