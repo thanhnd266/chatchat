@@ -32,8 +32,10 @@ const server = app.listen(port, () => {
 // socket
 let io = socketIO(server, {
     cors: {
-        origin: "https://thanhdev.me/",
-        methods: ["GET", "POST"]
+        origin: "*",
+        methods: ["GET", "POST"],
+	allowedHeaders: ["my-custom-header"],
+    	credentials: true
     }
 });
 

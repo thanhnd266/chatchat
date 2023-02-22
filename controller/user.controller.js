@@ -72,6 +72,7 @@ const createUser = async(ctx) => {
                 username,
                 email,
                 password: hashPassword(password),
+		profilePicture: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/OOjs_UI_icon_userAvatar-progressive.svg/1200px-OOjs_UI_icon_userAvatar-progressive.svg.png"
             });
             ctx.response.status = 200;
             ctx.response.body = {
