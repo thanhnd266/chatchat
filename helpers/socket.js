@@ -26,6 +26,8 @@ const socketActions = (socket, io) => {
 
     //Send and get message
     socket.on("sendMessage", ({ receiverId, ...data }) => {
+        console.log(receiverId)
+        console.log(data)
         const user = getSingleUser(receiverId);
         io.to(user.socketId).emit("getMessage", data)
     })
