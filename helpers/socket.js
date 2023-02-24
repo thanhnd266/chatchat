@@ -1,8 +1,8 @@
 let users = [];
 
-const addUser = (userId, socketId) => {
-    !users.some(user => user.userId === userId) &&
-        users.push({ userId, socketId });
+const addUser = (client, socketId) => {
+    !users.some(user => user.userId === client._id) &&
+        users.push({ ...client, socketId });
 }
 
 const removeUser = (socketId) => {
@@ -10,7 +10,7 @@ const removeUser = (socketId) => {
 }
 
 const getSingleUser = (userId) => {
-    receiverUser = users.find(user => user.userId === userId);
+    receiverUser = users.find(user => user._id === userId);
     return receiverUser
 }
 
@@ -19,15 +19,13 @@ const socketActions = (socket, io) => {
     console.log('A user connected');
 
     //Take userId and socketId from user
-    socket.on("addUser", userId => {
-        addUser(userId, socket.id);
+    socket.on("addUser", user => {
+        addUser(user, socket.id);
         io.emit("getUsers", users)
     })
 
     //Send and get message
     socket.on("sendMessage", ({ receiverId, ...data }) => {
-        console.log(receiverId)
-        console.log(data)
         const user = getSingleUser(receiverId);
         io.to(user.socketId).emit("getMessage", data)
     })
