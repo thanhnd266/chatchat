@@ -29,7 +29,10 @@ const getOneConversation = async (ctx) => {
       members: {
         $all: [ctx.request.params.userId, ctx.request.params.receiverId],
       },
+    }).populate({
+      path: "members",
     });
+
     ctx.response.status = 200;
     ctx.response.body = {
       status_code: 200,
@@ -46,9 +49,12 @@ const createConversation = async (ctx) => {
   try {
     const receiverId = ctx.request.body.receiverId;
     const senderId = ctx.request.body.senderId;
-    const newConversation = new Conversation({
+    const newConversation = await new Conversation({
       members: [senderId, receiverId],
+    }).populate({
+      path: "members",
     });
+
     await newConversation.save();
     ctx.response.status = 200;
     ctx.response.body = {
