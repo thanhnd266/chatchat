@@ -1,105 +1,102 @@
-const { verifyToken } = require('../../helpers/token');
-const { verifyRedis } = require('../../helpers/redis');
+const { verifyToken } = require("../../helpers/token");
+const { verifyRedis } = require("../../helpers/redis");
 
 const authenticate = async (ctx, next) => {
-    
-    const { authorization } = ctx.request.headers
-;
-
-    if(!authorization || !authorization.startsWith("Bearer")) {
-        ctx.response.status = 401;
-        ctx.response.body = {
-            status_code: 401,
-            message: 'Access Token expired',
-            error_message: 'access_token_expired'
-        }
-
-return;
+  const { authorization } = ctx.request.headers;
+  if (!authorization || !authorization.startsWith("Bearer")) {
+    ctx.response.status = 401;
+    ctx.response.body = {
+      status_code: 401,
+      message: "Access Token expired",
+      error_message: "access_token_expired",
     };
 
-console.log(authorization, "running")
-    const access_token = authorization.split(' ')[1];
+    return;
+  }
 
-    try {
-        //check exist in redis
-        const is_verified = await verifyRedis(access_token);
+  const access_token = authorization.split(" ")[1];
 
-        if(!is_verified) {
-            ctx.response.status = 401;
-            ctx.response.body = {
-                status_code: 401,
-                message: 'Access Token expired',
-                error_message: 'access_token_expired'
-            }
+  try {
+    //check exist in redis
+    const is_verified = await verifyRedis(access_token);
 
-            return;
-        };
+    if (!is_verified) {
+      ctx.response.status = 401;
+      ctx.response.body = {
+        status_code: 401,
+        message: "Access Token expired",
+        error_message: "access_token_expired",
+      };
 
-        //Check verify with JWT
-        const payload = await verifyToken(access_token, 'access_token');
-
-        ctx.state.user = {
-            ...payload,
-            access_token,
-        }
-
-        return next();
-    } catch(err) {
-        ctx.response.status = 401;
-        ctx.response.body = {
-            status_code: 401,
-            message: 'Access Token expired',
-            error_message: 'access_token_expired'
-        }
+      return;
     }
+
+    //Check verify with JWT
+    const payload = await verifyToken(access_token, "access_token");
+
+    ctx.state.user = {
+      ...payload,
+      access_token,
+    };
+
+    return next();
+  } catch (err) {
+    ctx.response.status = 401;
+    ctx.response.body = {
+      status_code: 401,
+      message: "Access Token expired",
+      error_message: "access_token_expired",
+    };
+  }
 };
 
 const verifyRefreshToken = async (ctx, next) => {
-    const { refresh_token } = ctx.request.body;
+  const { refresh_token } = ctx.request.body;
 
-    if(!refresh_token) {
-        ctx.response.status = 403;
-        ctx.response.body = {
-            status_code: 403,
-            message: 'Invalid Param',
-        }
+  if (!refresh_token) {
+    ctx.response.status = 403;
+    ctx.response.body = {
+      status_code: 403,
+      message: "Invalid Param",
+    };
 
-        return;
+    return;
+  }
+
+  try {
+    const is_verified = await verifyRedis(refresh_token);
+
+    if (!is_verified) {
+      ctx.response.status = 401;
+      ctx.response.body = {
+        status_code: 401,
+        message: "Refresh Token Expired",
+        error_message: "refresh_token_expired",
+      };
+
+      return;
     }
 
-    try {
-        const is_verified = await verifyRedis(refresh_token);
+    //check with JWT
+    const payload = await verifyToken(refresh_token);
 
-        if(!is_verified) {
-            ctx.response.status = 401;
-            ctx.response.body = {
-                status_code: 401,
-                message: 'Refresh Token Expired',
-            }
+    ctx.state.auth = {
+      payload,
+      current_refresh_token: refresh_token,
+    };
 
-            return;
-        }
-
-        //check with JWT
-        const payload = await verifyToken(refresh_token);
-
-        ctx.state.auth = {
-            payload,
-            current_refresh_token: refresh_token,
-        }
-
-        return next();
-
-    } catch(err) {
-        ctx.response.status = 401;
-        ctx.response.body = {
-            status_code: 401,
-            message: 'Refresh Token Expired',
-        }
-    }
-}
+    return next();
+  } catch (err) {
+    ctx.response.status = 401;
+    ctx.response.body = {
+      status_code: 401,
+      message: "Refresh Token Expired",
+      error_message: "refresh_token_expired",
+    };
+  }
+};
 
 module.exports = {
-    authenticate,
-    verifyRefreshToken,
-}
+  authenticate,
+  verifyRefreshToken,
+};
