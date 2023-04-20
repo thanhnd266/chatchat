@@ -1,13 +1,12 @@
 const PostSchema = require("../../models/Posts");
 const User = require("../../models/User");
+const cloudinaryUpload = require("../../helpers/cloudinaryUpload");
 
 const createPost = async (ctx) => {
   const payloadPrimative = ctx.request.body;
   const file = ctx.request.files;
 
   const payload = JSON.parse(payloadPrimative.payload);
-
-  console.log(file);
 
   try {
     if (!payload.userId || !payload.public_status) {
@@ -39,6 +38,20 @@ const createPost = async (ctx) => {
       };
       return;
     }
+
+    //Upload image to cloudinary
+    let listLinkImage = [];
+    file?.forEach(async (item) => {
+      try {
+        const res = await cloudinaryUpload(item, payload.userId);
+        listLinkImage.push(await res.secure_url);
+      } catch (err) {
+        ctx.response.status = 400;
+        ctx.response.body = { err: err.message };
+      }
+    });
+
+    console.log(listLinkImage);
 
     const newPost = await PostSchema.create({
       ...payload,

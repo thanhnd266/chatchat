@@ -17,7 +17,7 @@ const app = new Koa();
 
 //Middleware
 app.use(cors());
-app.use(koaJson());
+app.use(koaJson({ limit: "50mb" }));
 app.use(bodyParser());
 app.use(morgan("dev"));
 app.use(serve(path.join(__dirname, "/public")));
