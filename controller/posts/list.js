@@ -2,8 +2,7 @@ const PostSchema = require("../../models/Posts");
 
 const getPosts = async (ctx) => {
   try {
-    const userId = ctx.request.body;
-    console.log(userId);
+    const { userId } = ctx.request.params;
 
     if (!userId) {
       ctx.response.status = 403;
@@ -16,12 +15,12 @@ const getPosts = async (ctx) => {
     }
 
     const posts = await PostSchema.find({ userId });
-    console.log(posts);
 
     ctx.response.status = 200;
     ctx.response.body = {
       status_code: 200,
       message: "Get list posts successfully",
+      data: posts,
     };
     return;
   } catch (err) {

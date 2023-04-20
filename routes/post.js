@@ -6,13 +6,13 @@ const removePost = require("../controller/posts/remove");
 
 const router = new KoaRouter();
 
-const images = require("../helpers/images");
+const upload = require("../helpers/images");
 
 //Get posts
-router.get("/", getPosts);
+router.get("/:userId", getPosts);
 
 //Create post
-router.post("/create", images.any(), createPost);
+router.post("/create", upload.any(), createPost);
 
 //Update post
 router.post("/update/:id", updatePost);

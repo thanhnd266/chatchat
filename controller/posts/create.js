@@ -2,11 +2,12 @@ const PostSchema = require("../../models/Posts");
 const User = require("../../models/User");
 
 const createPost = async (ctx) => {
-  const payload = ctx.request.body;
+  const payloadPrimative = ctx.request.body;
   const file = ctx.request.files;
 
+  const payload = JSON.parse(payloadPrimative.payload);
+
   console.log(file);
-  console.log(JSON.parse(payload.payload));
 
   try {
     if (!payload.userId || !payload.public_status) {
@@ -19,7 +20,7 @@ const createPost = async (ctx) => {
       return;
     }
 
-    if (!payload.content && payload.image.length === 0) {
+    if (!payload.content && payload.image?.length === 0) {
       ctx.response.status = 403;
       ctx.response.body = {
         status_code: 403,
@@ -41,6 +42,7 @@ const createPost = async (ctx) => {
 
     const newPost = await PostSchema.create({
       ...payload,
+      image: file?.map((item) => item.filename),
     });
 
     ctx.response.status = 200;
