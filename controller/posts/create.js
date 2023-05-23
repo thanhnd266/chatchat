@@ -4,7 +4,7 @@ const cloudinaryUpload = require("../../helpers/cloudinaryUpload");
 
 const createPost = async (ctx) => {
   const payloadPrimative = ctx.request.body;
-  const file = ctx.request.files;
+  const files = ctx.request.files;
 
   const payload = JSON.parse(payloadPrimative.payload);
 
@@ -19,7 +19,7 @@ const createPost = async (ctx) => {
       return;
     }
 
-    if (!payload.content && payload.image?.length === 0) {
+    if (!payload.content && files.length === 0) {
       ctx.response.status = 403;
       ctx.response.body = {
         status_code: 403,
@@ -39,23 +39,21 @@ const createPost = async (ctx) => {
       return;
     }
 
-    //Upload image to cloudinary
-    let listLinkImage = [];
-    file?.forEach(async (item) => {
-      try {
-        const res = await cloudinaryUpload(item, payload.userId);
-        listLinkImage.push(await res.secure_url);
-      } catch (err) {
-        ctx.response.status = 400;
-        ctx.response.body = { err: err.message };
-      }
+    // Upload image to cloudinary
+    const listLinkImage = await Promise.all(
+      files?.map((item) => {
+        return cloudinaryUpload(item, payload.userId);
+      })
+    );
+    
+    const imgUrl = listLinkImage.map((item) => {
+      return item.secure_url;
     });
 
-    console.log(listLinkImage);
 
     const newPost = await PostSchema.create({
       ...payload,
-      image: file?.map((item) => item.filename),
+      image: [...imgUrl],
     });
 
     ctx.response.status = 200;

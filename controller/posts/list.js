@@ -2,19 +2,9 @@ const PostSchema = require("../../models/Posts");
 
 const getPosts = async (ctx) => {
   try {
-    const { userId } = ctx.request.params;
+    const { limit, page, order, filter } = ctx.request.body;
 
-    if (!userId) {
-      ctx.response.status = 403;
-      ctx.response.body = {
-        status_code: 403,
-        message: "Invalid parameters",
-      };
-
-      return;
-    }
-
-    const posts = await PostSchema.find({ userId });
+    const posts = await PostSchema.getPostByLimit(limit, page, order, filter);
 
     ctx.response.status = 200;
     ctx.response.body = {

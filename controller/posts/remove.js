@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const PostSchema = require("../../models/Posts");
 
 const removePost = async (ctx) => {
