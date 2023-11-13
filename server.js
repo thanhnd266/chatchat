@@ -27,6 +27,12 @@ app.use(serve(path.join(__dirname, "/public")));
 //Routes
 app.use(routerIndex);
 
+app.get("/hello", (ctx) => {
+  ctx.body = {
+    'hello': "hi"
+  }
+})
+
 //Connect to db
 connectToDB();
 
