@@ -67,7 +67,7 @@ const loginController = async (ctx) => {
         ctx.response.status = 500;
         ctx.response.body = {
             message: err.message,
-            error_code: 500,
+            status_code: 500,
         }
     }
 }
