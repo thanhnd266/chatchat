@@ -16,5 +16,10 @@ router.use("/user", routerUser);
 router.use("/image", routerImage);
 router.use("/email", routerEmail);
 router.use("/posts", routerPost);
+router.get("/hello", (ctx) => {
+    ctx.body = {
+        'hello': "hi"
+    }
+})
 
 module.exports = router.routes();
