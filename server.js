@@ -16,7 +16,9 @@ const { socketActions } = require("./helpers/socket");
 const app = new Koa();
 
 //Middleware
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
 app.use(koaJson({ limit: "50mb" }));
 app.use(bodyParser());
 app.use(morgan("dev"));
