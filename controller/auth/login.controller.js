@@ -6,16 +6,9 @@ const redisHelper = require('../../helpers/redis');
 
 const loginController = async (ctx) => {
     try {
-        let { email, password } = ctx.request.body;
+        let { userName, password } = ctx.request.body;
 
-        if(!email || !isValidEmail(email)) {
-            ctx.response.status = 400;
-            ctx.response.body = {
-                status_code: 400,
-                message: 'Email is incorrect!'
-            }
-            return;
-        }
+        console.log("vao day roi nhe");
 
         if(!password) {
             ctx.response.status = 400;
@@ -26,10 +19,10 @@ const loginController = async (ctx) => {
             return;
         }
 
-        email = email.trim();
+        userName = userName.trim();
         password = password.trim();
 
-        const userLogin = await userSchema.findOne({ email });
+        const userLogin = await userSchema.findOne({ email: userName });
 
         if(userLogin) {
             if(comparePassword(password, userLogin.password)) {

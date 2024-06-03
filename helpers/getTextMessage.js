@@ -6,7 +6,7 @@ const getTextMessageChatbot = (text) => {
             return {
                 isChart: true,
                 textMessage: JSON.stringify({
-                    dataChart: dataLineChart
+                    dataChart: dataPieChart
                 }),
             };
         case "&lt;barchart&gt;":

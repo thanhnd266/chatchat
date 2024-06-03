@@ -49,7 +49,7 @@ const createBotChat = async (ctx) => {
           title: title,
           is_direct_chat: is_direct_chat
       }
-  
+
       const res = await axios.put("https://api.chatengine.io/chats/", payload, {
           headers: {
               'Project-ID': '5f5b4220-901f-4bde-826b-b245dcb0f9bf',
@@ -64,8 +64,9 @@ const createBotChat = async (ctx) => {
                 greeting: "Tôi là chatbot, tôi có thể giúp gì được bạn!",
                 guide: "<ul><span>Hướng dẫn, Nhập: </span><li>&lt;piechart&gt;: để xem PieChart</li><li>&lt;linechart&gt;: để xem LineChart</li><li>&lt;treechart&gt;: để xem TreeChart</li><li>&lt;barchart&gt;: để xem BarChart</li></ul>",
                 dataChart: dataLineChart
-            }),
+            })
         };
+
         const idNewChat = res?.data?.id;
 
         //send chart to client
@@ -73,7 +74,7 @@ const createBotChat = async (ctx) => {
             headers: {
                 'Project-ID': '5f5b4220-901f-4bde-826b-b245dcb0f9bf',
                 'User-Name': 'Chatbot',
-                'User-Secret': user_secret
+                'User-Secret': '123456'
             }
         });
 
