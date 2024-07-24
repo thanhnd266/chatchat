@@ -6,7 +6,7 @@ const redisHelper = require('../../helpers/redis');
 
 const loginController = async (ctx) => {
     try {
-        let { userName, password } = ctx.request.body;
+        let { userName, email, password } = ctx.request.body;
 
         console.log("vao day roi nhe");
 
@@ -19,7 +19,7 @@ const loginController = async (ctx) => {
             return;
         }
 
-        userName = userName.trim();
+        userName = userName ? userName.trim() : email.trim();
         password = password.trim();
 
         const userLogin = await userSchema.findOne({ email: userName });
